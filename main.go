@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"smart-kost-backend/handler"
+	"smart-kost-backend/routes"
+	"smart-kost-backend/service"
 	dbstore "smart-kost-backend/store/db"
 
 	"github.com/gin-gonic/gin"
@@ -16,10 +19,19 @@ func main() {
 		log.Fatalln("Error loading env")
 	}
 
-	prepare()
+	handlers := prepare()
 
 	srv := gin.Default()
+
+	routes.Build(srv, handlers)
+	srv.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Hello world!",
+		})
+	})
+
 	port := os.Getenv("PORT")
+
 	if port == "" {
 		port = "8080"
 	}
@@ -30,17 +42,17 @@ func main() {
 	}
 }
 
-func prepare() {
+func prepare() (handlers routes.Handlers) {
 
 	_ = dbstore.Get()
 
-	// testService := service.NewTestService()
-	// test:= handler.NewTestHandler(handler.TestHandlerConfig{
-	// 	TestService: testService,
-	// })
+	testService := service.NewTestService()
+	test := handler.NewTestHandler(handler.TestHandlerConfig{
+		TestService: testService,
+	})
 
-	// handlers = routes.Handlers{
-	// 	Test: test,
-	// }
-	// return
+	handlers = routes.Handlers{
+		Test: test,
+	}
+	return
 }
