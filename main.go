@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"smart-kost-backend/handler"
+	"smart-kost-backend/repository"
 	"smart-kost-backend/routes"
 	"smart-kost-backend/service"
 	dbstore "smart-kost-backend/store/db"
@@ -24,11 +25,6 @@ func main() {
 	srv := gin.Default()
 
 	routes.Build(srv, handlers)
-	srv.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello world!",
-		})
-	})
 
 	port := os.Getenv("PORT")
 
@@ -44,15 +40,25 @@ func main() {
 
 func prepare() (handlers routes.Handlers) {
 
-	_ = dbstore.Get()
+	db := dbstore.Get()
+
+	humTempRawRepo := repository.NewHumTempRawRepository(db)
 
 	testService := service.NewTestService()
+	humTempRawService := service.NewHumTempRawService(service.HumTempRawServiceConfig{
+		HumTempRawRepo: humTempRawRepo,
+	})
+
 	test := handler.NewTestHandler(handler.TestHandlerConfig{
 		TestService: testService,
 	})
+	humTempRawHandler := handler.NewHumTempRawHandler(handler.HumTempRawHandlerConfig{
+		HumTempRawService: humTempRawService,
+	})
 
 	handlers = routes.Handlers{
-		Test: test,
+		Test:       test,
+		HumTempRaw: humTempRawHandler,
 	}
 	return
 }
