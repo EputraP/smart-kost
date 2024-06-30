@@ -1,4 +1,6 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,76 +12,79 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _page = 2;
+  Color bgColor = Colors.red;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final List<Widget> _navigationItem = [
+    const Icon(Icons.dashboard),
+    const Icon(Icons.shopping_cart),
+    const Icon(Icons.home),
+    const Icon(Icons.settings),
+    const Icon(Icons.person)
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Container(
+        color: bgColor,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(_page.toString(), style: TextStyle(fontSize: 160)),
+              ElevatedButton(
+                child: Text('Go To Page of index 1'),
+                onPressed: () {
+                  final CurvedNavigationBarState? navBarState =
+                      _bottomNavigationKey.currentState;
+                  navBarState?.setPage(1);
+                },
+              )
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        backgroundColor: bgColor,
+        items: _navigationItem,
+        index: 2,
+        animationDuration: const Duration(milliseconds: 300),
+        onTap: (index) {
+          if (index == 0) {
+            bgColor = Colors.blue;
+          } else if (index == 1) {
+            bgColor = Colors.yellow;
+          } else if (index == 2) {
+            bgColor = Colors.red;
+          } else if (index == 3) {
+            bgColor = Colors.green;
+          } else if (index == 4) {
+            bgColor = Colors.teal;
+          }
+          setState(() {
+            _page = index;
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
     );
   }
 }
