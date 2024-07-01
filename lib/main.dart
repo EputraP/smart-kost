@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/component/curved_bottom_navigator.dart';
 import 'package:mobile_app/component/splash_screen.dart';
+import 'dart:developer';
 
 void main() {
   runApp(const MyApp());
@@ -32,11 +33,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color bgColor = Colors.red;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
-  final List<Widget> _navigationItem = [
-    const Icon(Icons.psychology),
-    const Icon(Icons.home),
-    const Icon(Icons.settings),
-  ];
+  void callbackFunction(value) {
+    setState(() {
+      _page = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,20 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(_page.toString(), style: TextStyle(fontSize: 160)),
-              ElevatedButton(
-                child: Text('Go To Page of index 1'),
-                onPressed: () {
-                  final CurvedNavigationBarState? navBarState =
-                      _bottomNavigationKey.currentState;
-                  navBarState?.setPage(0);
-                },
-              )
             ],
           ),
         ),
       ),
       bottomNavigationBar: CurvedBottomNavigator(
         bgColor: bgColor,
+        callbackFunction: callbackFunction,
       ),
     );
   }
