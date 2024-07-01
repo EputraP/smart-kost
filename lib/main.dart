@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/splash_screen.dart';
+import 'package:mobile_app/component/curved_bottom_navigator.dart';
+import 'package:mobile_app/component/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,16 +28,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _page = 2;
-  Color bgColor = Colors.red;
+  int _page = 1;
+  final Color bgColor = Colors.red;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _navigationItem = [
-    const Icon(Icons.dashboard),
-    const Icon(Icons.shopping_cart),
+    const Icon(Icons.psychology),
     const Icon(Icons.home),
     const Icon(Icons.settings),
-    const Icon(Icons.person)
   ];
 
   @override
@@ -54,36 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   final CurvedNavigationBarState? navBarState =
                       _bottomNavigationKey.currentState;
-                  navBarState?.setPage(1);
+                  navBarState?.setPage(0);
                 },
               )
             ],
           ),
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        backgroundColor: bgColor,
-        items: _navigationItem,
-        index: 2,
-        animationDuration: const Duration(milliseconds: 300),
-        onTap: (index) {
-          if (index == 0) {
-            bgColor = Colors.blue;
-          } else if (index == 1) {
-            bgColor = Colors.yellow;
-          } else if (index == 2) {
-            bgColor = Colors.red;
-          } else if (index == 3) {
-            bgColor = Colors.green;
-          } else if (index == 4) {
-            bgColor = Colors.teal;
-          }
-          setState(() {
-            _page = index;
-          });
-        },
-        letIndexChange: (index) => true,
+      bottomNavigationBar: CurvedBottomNavigator(
+        bgColor: bgColor,
       ),
     );
   }
