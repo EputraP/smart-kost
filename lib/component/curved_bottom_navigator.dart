@@ -16,6 +16,7 @@ class CurvedBottomNavigator extends StatefulWidget {
 class _CurvedBottomNavigatorState extends State<CurvedBottomNavigator> {
   // final int _page = 1;
   // Color bgColor = Colors.red;
+
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   final List<Widget> _navigationItem = [
@@ -33,18 +34,21 @@ class _CurvedBottomNavigatorState extends State<CurvedBottomNavigator> {
       index: 1,
       animationDuration: const Duration(milliseconds: 300),
       onTap: (index) {
-        // if (index == 0) {
-        //   bgColor = Colors.blue;
-        // } else if (index == 1) {
-        //   bgColor = Colors.yellow;
-        // } else if (index == 2) {
-        //   bgColor = Colors.red;
-        // } else if (index == 3) {
-        //   bgColor = Colors.green;
-        // } else if (index == 4) {
-        //   bgColor = Colors.teal;
-        // }
-        widget.callbackFunction(index);
+        Color bgColor = Colors.red;
+        if (index == 0) {
+          bgColor = Colors.blue;
+          // Navigator.pushNamed(context, '/params');
+        } else if (index == 1) {
+          bgColor = Colors.yellow;
+          // Navigator.pushNamed(context, '/home');
+        } else if (index == 2) {
+          bgColor = Colors.red;
+          // Navigator.pushNamed(context, '/setting');
+        }
+        widget.callbackFunction(<String, dynamic>{
+          "index": index,
+          "bgColor": bgColor,
+        });
       },
       letIndexChange: (index) => true,
     );
