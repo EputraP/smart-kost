@@ -16,6 +16,7 @@ class _MainWrapperState extends State<MainWrapper> {
   int _page = 1;
   int trek = 1;
   Color bgColor = Colors.red;
+
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   void _goBranch(int index) {
