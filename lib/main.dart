@@ -1,8 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/services/current_location.dart';
 import 'package:mobile_app/component/curved_bottom_navigator.dart';
 import 'package:mobile_app/component/splash_screen.dart';
-import 'dart:developer';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int _page = 1;
   final Color bgColor = Colors.red;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-
+  // CurrentLocation currentLocationInstance =
+  //     CurrentLocation(age: 10, name: 'Bob');
+  // String test = currentLocationInstance.get("te");
+  // log('data: $testVal');
   void callbackFunction(value) {
     setState(() {
       _page = value;
@@ -49,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(_page.toString(), style: TextStyle(fontSize: 160)),
+              // Text(testVal),
             ],
           ),
         ),
