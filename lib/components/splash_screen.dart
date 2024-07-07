@@ -10,7 +10,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: LottieBuilder.asset("assets/animation/home_splash_screen.json"),
-      nextScreen: const MyHomePage(),
+      nextScreen: Container(), //const MyHomePage(),
       splashIconSize: 300,
       backgroundColor: Colors.blue,
     );
