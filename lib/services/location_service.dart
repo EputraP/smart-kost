@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart' as handler;
 
 class LocationService {
   LocationService.init();
@@ -19,7 +20,7 @@ class LocationService {
     return Future.error("Location service is not enabled");
   }
 
-  Future<bool> getLocation() async {
+  Future<bool> checkForPermission() async {
     PermissionStatus status = await _location.hasPermission();
 
     if (status == PermissionStatus.denied) {
@@ -30,9 +31,30 @@ class LocationService {
       return false;
     }
     if (status == PermissionStatus.deniedForever) {
+      SnackBar(
+        content: const Text(
+            "Permission Needed, We use permission to get your location"),
+        action: SnackBarAction(
+          label: "Setting",
+          onPressed: () {
+            handler.openAppSettings();
+          },
+          // onPressed: () {},
+        ),
+      );
       return false;
     }
 
-    return false;
+    return Future.value(true);
+  }
+
+  Future<void> getUserLocation() async {
+    if (!(await checkForServiceAvaibility())) {
+      return;
+    }
+    if (!(await checkForPermission())) {
+      return;
+    }
+    final LocationData data = await _location.getLocation();
   }
 }
