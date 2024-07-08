@@ -14,12 +14,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            Text("Home"),
-            Text("tests"),
-          ],
-        ),
+        child: Text("home"),
       ),
     );
   }
