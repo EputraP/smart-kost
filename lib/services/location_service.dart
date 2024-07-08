@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:mobile_app/controller/location_controller.dart';
 import 'package:permission_handler/permission_handler.dart' as handler;
 
 class LocationService {
@@ -17,7 +18,7 @@ class LocationService {
     if (isEnabled) {
       return Future.value(true);
     }
-    return Future.error("Location service is not enabled");
+    return Future.value(false);
   }
 
   Future<bool> checkForPermission() async {
@@ -31,30 +32,43 @@ class LocationService {
       return false;
     }
     if (status == PermissionStatus.deniedForever) {
-      SnackBar(
-        content: const Text(
-            "Permission Needed, We use permission to get your location"),
-        action: SnackBarAction(
-          label: "Setting",
-          onPressed: () {
-            handler.openAppSettings();
-          },
-          // onPressed: () {},
-        ),
-      );
+      // SnackBar(
+      //   content: const Text(
+      //       "Permission Needed, We use permission to get your location"),
+      //   action: SnackBarAction(
+      //     label: "Setting",
+      //     onPressed: () {
+      //       handler.openAppSettings();
+      //     },
+      //     // onPressed: () {},
+      //   ),
+      // );
+
+      Get.snackbar("Permission Needed",
+          "We use permission to get your location in order to give your service",
+          onTap: (snack) async {
+        await handler.openAppSettings();
+      }).show();
       return false;
     }
 
     return Future.value(true);
   }
 
-  Future<void> getUserLocation() async {
+  Future<void> getUserLocation({required LocationController controller}) async {
+    controller.updateIsAccessingLocation(true);
     if (!(await checkForServiceAvaibility())) {
+      controller.errorDescription.value = "Service not enabled";
+      controller.updateIsAccessingLocation(false);
       return;
     }
     if (!(await checkForPermission())) {
+      controller.errorDescription.value = "Permission not given";
+      controller.updateIsAccessingLocation(false);
       return;
     }
     final LocationData data = await _location.getLocation();
+    controller.updateUserLocation(data);
+    controller.updateIsAccessingLocation(false);
   }
 }
