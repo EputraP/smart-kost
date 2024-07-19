@@ -43,10 +43,14 @@ func prepare() (handlers routes.Handlers) {
 	db := dbstore.Get()
 
 	humTempRawRepo := repository.NewHumTempRawRepository(db)
+	userRepo := repository.NewUserRepository(db)
 
 	testService := service.NewTestService()
 	humTempRawService := service.NewHumTempRawService(service.HumTempRawServiceConfig{
 		HumTempRawRepo: humTempRawRepo,
+	})
+	userService := service.NewUserService(service.UserServiceConfig{
+		UserRepo: userRepo,
 	})
 
 	test := handler.NewTestHandler(handler.TestHandlerConfig{
@@ -55,10 +59,14 @@ func prepare() (handlers routes.Handlers) {
 	humTempRawHandler := handler.NewHumTempRawHandler(handler.HumTempRawHandlerConfig{
 		HumTempRawService: humTempRawService,
 	})
+	userHandler := handler.NewUserRawHandler(handler.UserHandlerConfig{
+		UserService: userService,
+	})
 
 	handlers = routes.Handlers{
 		Test:       test,
 		HumTempRaw: humTempRawHandler,
+		User: userHandler,
 	}
 	return
 }

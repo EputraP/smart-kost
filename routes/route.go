@@ -9,6 +9,7 @@ import (
 type Handlers struct {
 	Test       *handler.TestHandler
 	HumTempRaw *handler.HumTempRawHandler
+	User       *handler.UserHandler
 }
 
 func Build(srv *gin.Engine, h Handlers) {
@@ -18,4 +19,7 @@ func Build(srv *gin.Engine, h Handlers) {
 	humTempRaw := srv.Group("/humTempRaw")
 	humTempRaw.POST("/create", h.HumTempRaw.CreateHumTempRaw)
 
+	user := srv.Group("/user")
+	user.POST("/login", h.User.Login)
+	user.POST("/signup", h.User.SignUp)
 }
