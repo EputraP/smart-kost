@@ -1,61 +1,73 @@
 package service
 
 import (
-	"os"
 	"smart-kost-backend/dto"
+	"smart-kost-backend/errs"
 	"smart-kost-backend/model"
 	"smart-kost-backend/repository"
-	"time"
+	"smart-kost-backend/util/hasher"
+	"smart-kost-backend/util/tokenprovider"
+	"strings"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
-	Login(input dto.User) (string, error)
-	 SignUp(input dto.User) (*dto.User, error)
+	Login(input dto.LoginBody) (*dto.LoginResponse, error)
+	SignUp(input dto.User) (*dto.User, error)
 }
 
 type userService struct {
-	userRepo repository.UserRepository
+	userRepo    repository.UserRepository
+	hasher      hasher.Hasher
+	jwtProvider tokenprovider.JWTTokenProvider
 }
 
 type UserServiceConfig struct {
-	UserRepo repository.UserRepository
+	UserRepo    repository.UserRepository
+	Hasher      hasher.Hasher
+	JwtProvider tokenprovider.JWTTokenProvider
 }
 
 func NewUserService(config UserServiceConfig) UserService {
 	return &userService{
-		userRepo: config.UserRepo,
+		userRepo:    config.UserRepo,
+		hasher:      config.Hasher,
+		jwtProvider: config.JwtProvider,
 	}
 }
 
-func (ts *userService) Login(input dto.User) (string, error) {
-	res, err := ts.userRepo.GetUserByUsername(&model.UserList{Username: input.UserName})
+func (ts userService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
+	lowerUsername := strings.ToLower(input.Username)
+	account, err := ts.userRepo.GetUserByUsername(&model.UserList{Username: lowerUsername})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	err=bcrypt.CompareHashAndPassword([]byte(res.Pass), []byte(input.Pass))
-	if err != nil {
-		return "", err
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":input.UserName,
-		"nbf":time.Now().Add(time.Hour*24*30).Unix(),
-	})
+	passwordOk, err := ts.hasher.IsEqual(account.Pass, input.Pass)
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	
-	return tokenString, nil
+
+	if !passwordOk {
+		return nil, errs.PasswordDoesntMatch
+	}
+
+	userClaims := model.UserList{}
+
+	if account != nil {
+		userClaims.UserId = account.UserId
+		userClaims.Username = account.Username
+	}
+
+	return ts.generateLoginResponse(&userClaims)
+
 }
 
-func (ts *userService) SignUp(input dto.User) (*dto.User, error) {
-	hash, err :=bcrypt.GenerateFromPassword([]byte(input.Pass), 10)
-	
+func (ts userService) SignUp(input dto.User) (*dto.User, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(input.Pass), 10)
+
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +78,26 @@ func (ts *userService) SignUp(input dto.User) (*dto.User, error) {
 	}
 	resp := &dto.User{
 		UserName: res.Username,
-		
 	}
 
 	return resp, err
+}
+
+func (ts userService) generateLoginResponse(user *model.UserList) (*dto.LoginResponse, error) {
+	accesToken, err := ts.jwtProvider.GenerateAccessToken(*user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, err := ts.jwtProvider.GenerateRefreshToken(*user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.LoginResponse{
+		AccesToken:   accesToken,
+		RefreshToken: refreshToken,
+	}, nil
 }
