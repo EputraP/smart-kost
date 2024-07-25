@@ -42,26 +42,19 @@ func (h UserHandler) UpdateOnline(c *gin.Context) {
 }
 
 func (h UserHandler) UpdateSOS(c *gin.Context) {
-	// var loginUser dto.LoginBody
+	var userOnline dto.UpdateUserOnlineSOS
 
-	// if err := c.ShouldBindJSON(&loginUser); err != nil {
-	// 	response.Error(c, 400, errs.InvalidRequestBody.Error())
-	// 	return
-	// }
+	if err := c.ShouldBindJSON(&userOnline); err != nil {
+		response.Error(c, 400, errs.InvalidRequestBody.Error())
+		return
+	}
 
-	h.userService.UpdateSOS()
+	resp, err := h.userService.UpdateSOS(userOnline)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
 
-	// if err != nil {
-	// 	if errors.Is(err, errs.PasswordDoesntMatch) ||
-	// 		errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		response.Error(c, 401, errs.UsernamePasswordIncorrect.Error())
-	// 		return
-	// 	}
-
-	// 	response.UnknownError(c, err)
-	// 	return
-	// }
-
-	response.JSON(c, 201, "Login success", "")
+	response.JSON(c, 201, "Update SOS status success", resp)
 
 }
