@@ -6,6 +6,7 @@ import (
 	"smart-kost-backend/errs"
 	"smart-kost-backend/service"
 	"smart-kost-backend/util/response"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -66,4 +67,22 @@ func (h AuthHandler) SignUp(c *gin.Context) {
 	}
 
 	response.JSON(c, 201, "Create User Success", resp)
+}
+
+func (h AuthHandler) Logout(c *gin.Context) {
+	if len(c.Param("userid")) == 0 {
+		response.Error(c, 400, errs.InvalidRequestParam.Error())
+		return
+	}
+
+	idStr, _ := strconv.Atoi(c.Param("userid"))
+
+	resp, err := h.authService.Logout(idStr)
+
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+
+	response.JSON(c, 201, "Logout success", resp)
 }

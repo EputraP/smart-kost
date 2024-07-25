@@ -10,7 +10,8 @@ var (
 
 	ForbiddenAccess = errors.New("user is forbidden to access this resource")
 
-	InvalidRequestBody = errors.New("invalid request body")
+	InvalidRequestBody  = errors.New("invalid request body")
+	InvalidRequestParam = errors.New("invalid request param")
 
 	EmailAlreadyUsed          = errors.New("email already used")
 	UsernameAlreadyUsed       = errors.New("username already used")

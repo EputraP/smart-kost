@@ -15,6 +15,7 @@ import (
 type AuthService interface {
 	Login(input dto.LoginBody) (*dto.LoginResponse, error)
 	SignUp(input dto.User) (*dto.User, error)
+	Logout(input int) (string, error)
 }
 
 type authService struct {
@@ -85,6 +86,16 @@ func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 	}
 
 	return resp, err
+}
+
+func (ts authService) Logout(input int) (string, error) {
+
+	_, err := ts.userRepo.UpdateIsOnline(&model.UserList{UserId: input, IsOnline: "0"})
+	if err != nil {
+		return "", err
+	}
+
+	return "", err
 }
 
 func (ts authService) generateLoginResponse(user *model.UserList) (*dto.LoginResponse, error) {
