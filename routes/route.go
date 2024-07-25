@@ -7,10 +7,11 @@ import (
 )
 
 type Handlers struct {
-	Test       *handler.TestHandler
-	HumTempRaw *handler.HumTempRawHandler
-	Auth       *handler.AuthHandler
-	User       *handler.UserHandler
+	Test                *handler.TestHandler
+	HumTempRaw          *handler.HumTempRawHandler
+	Auth                *handler.AuthHandler
+	User                *handler.UserHandler
+	UserCurrentLocation *handler.UserCurrentLocationHandler
 }
 type Middlewares struct {
 	Auth gin.HandlerFunc
@@ -25,6 +26,9 @@ func Build(srv *gin.Engine, h Handlers, middlewares Middlewares) {
 	user := srv.Group("/user")
 	user.PUT("/update-online", middlewares.Auth, h.User.UpdateOnline)
 	user.PUT("/update-sos", middlewares.Auth, h.User.UpdateSOS)
+
+	userCurrentLocation := srv.Group("/user-location")
+	userCurrentLocation.PUT("/update", h.UserCurrentLocation.UpdateUserCurrentLocation)
 
 	test := srv.Group("test")
 	test.GET("/", middlewares.Auth, h.Test.Test)

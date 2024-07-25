@@ -1,62 +1,51 @@
 package service
 
 import (
-	"smart-kost-backend/dto"
-	"smart-kost-backend/model"
+	"net/http"
 	"smart-kost-backend/repository"
 )
 
-type UserService interface {
-	UpdateOnline(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error)
-	UpdateSOS(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error)
+type UserCurrentLocationService interface {
+	UpdateUserCurrentLocation()
 }
 
-type userService struct {
-	userRepo repository.UserRepository
+type userCurrentLocationService struct {
+	userCurrentLocationRepo repository.UserCurrentLocationRepo
 }
 
-type UserServiceConfig struct {
-	UserRepo repository.UserRepository
+type UserCurrentLocationServiceConfig struct {
+	UserCurrentLocationRepo repository.UserCurrentLocationRepo
 }
 
-func NewUserService(config UserServiceConfig) UserService {
-	return &userService{
-		userRepo: config.UserRepo,
+func NewUserCurrentLocationService(config UserCurrentLocationServiceConfig) UserCurrentLocationService {
+	return &userCurrentLocationService{
+		userCurrentLocationRepo: config.UserCurrentLocationRepo,
 	}
 }
 
-func (s userService) UpdateOnline(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error) {
+func (s userCurrentLocationService) UpdateUserCurrentLocation() {
+	GetAddressFromLatLong()
+	// var resp *dto.UserResponse
+	// res, err := s.userRepo.UpdateIsOnline(&model.UserList{UserId: input.UserId, IsOnline: input.IsOnline})
 
-	var resp *dto.UserResponse
-	res, err := s.userRepo.UpdateIsOnline(&model.UserList{UserId: input.UserId, IsOnline: input.IsOnline})
+	// if err != nil {
+	// 	println(err)
+	// }
 
-	if err != nil {
+	// resp = &dto.UserResponse{
+	// 	UserId:   res.UserId,
+	// 	Username: res.Username,
+	// 	IsOnline: res.IsOnline,
+	// 	IsSOS:    res.IsSOS,
+	// }
+
+	// return resp, nil
+}
+func GetAddressFromLatLong() {
+	apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=-6.927770970656957&lon=107.61239014399705"
+	res, err := http.Get(apiUrl)
+	if res != nil {
 		println(err)
 	}
-
-	resp = &dto.UserResponse{
-		UserId:   res.UserId,
-		Username: res.Username,
-		IsOnline: res.IsOnline,
-		IsSOS:    res.IsSOS,
-	}
-
-	return resp, nil
-}
-func (s userService) UpdateSOS(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error) {
-	var resp *dto.UserResponse
-	res, err := s.userRepo.UpdateIsSOS(&model.UserList{UserId: input.UserId, IsSOS: input.IsSOS})
-
-	if err != nil {
-		println(err)
-	}
-
-	resp = &dto.UserResponse{
-		UserId:   res.UserId,
-		Username: res.Username,
-		IsOnline: res.IsOnline,
-		IsSOS:    res.IsSOS,
-	}
-
-	return resp, nil
+	println(res)
 }

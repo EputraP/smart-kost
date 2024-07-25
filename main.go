@@ -87,9 +87,11 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 		Hasher:                  hasher,
 		JwtProvider:             tokenprovider.GetProvider(),
 	})
-
 	userService := service.NewUserService(service.UserServiceConfig{
 		UserRepo: userRepo,
+	})
+	userCurrentLocationService := service.NewUserCurrentLocationService(service.UserCurrentLocationServiceConfig{
+		UserCurrentLocationRepo: userCurrentLocationRepo,
 	})
 
 	test := handler.NewTestHandler(handler.TestHandlerConfig{
@@ -104,6 +106,9 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	userHandler := handler.NewUserRawHandler(handler.UserHandlerConfig{
 		UserService: userService,
 	})
+	userCurrentLocationHandler := handler.NewUserCurrentLocationRawHandler(handler.UserCurrentLocationHandlerConfig{
+		UserCurrentLocationService: userCurrentLocationService,
+	})
 
 	cornJob := middleware.NewCorn(
 		middleware.CornJobConfig{
@@ -113,10 +118,11 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	cornJob.UpdateUserToOffline()
 
 	handlers = routes.Handlers{
-		Test:       test,
-		HumTempRaw: humTempRawHandler,
-		Auth:       authHandler,
-		User:       userHandler,
+		Test:                test,
+		HumTempRaw:          humTempRawHandler,
+		Auth:                authHandler,
+		User:                userHandler,
+		UserCurrentLocation: userCurrentLocationHandler,
 	}
 	return
 }
