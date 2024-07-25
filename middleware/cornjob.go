@@ -30,7 +30,6 @@ func (c cornJob) UpdateUserToOffline() {
 
 	s.Every(5).Minutes().Do(func() {
 		c.userRepo.UpdateUserOffline()
-		println("test1")
 	})
 	s.StartAsync()
 }
