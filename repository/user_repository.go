@@ -12,6 +12,7 @@ type UserRepository interface {
 	GetUserByUsername(inputModel *model.UserList) (*model.UserList, error)
 	UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error)
 	UpdateIsSOS(inputModel *model.UserList) (*model.UserList, error)
+	UpdateUserOffline()
 }
 
 type userRepo struct {
@@ -66,4 +67,12 @@ func (r *userRepo) UpdateIsSOS(inputModel *model.UserList) (*model.UserList, err
 	}
 
 	return inputModel, nil
+}
+
+func (r *userRepo) UpdateUserOffline() {
+	var modelDb model.UserList
+	res := r.db.Raw("UPDATE user_list SET is_online = '0' WHERE is_online = '1' AND extract(epoch from (now()+ interval '7 hour') - updated_at) / 60 > 5").Scan(&modelDb)
+	if res.Error != nil {
+		println(res.Error)
+	}
 }
