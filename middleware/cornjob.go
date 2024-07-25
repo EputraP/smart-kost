@@ -27,7 +27,7 @@ func NewCorn(config CornJobConfig) CornJob {
 
 func (c cornJob) UpdateUserToOffline() {
 	s := gocron.NewScheduler(time.UTC)
-	println("test")
+
 	s.Every(5).Minutes().Do(func() {
 		c.userRepo.UpdateUserOffline()
 		println("test1")
