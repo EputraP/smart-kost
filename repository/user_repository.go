@@ -2,7 +2,6 @@ package repository
 
 import (
 	"smart-kost-backend/model"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -51,7 +50,7 @@ func (r *userRepo) GetUserByUsername(inputModel *model.UserList) (*model.UserLis
 
 func (r *userRepo) UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error) {
 
-	res := r.db.Raw("UPDATE user_list SET is_online = ?, updated_at = ? WHERE user_id = ? RETURNING *", string(inputModel.IsOnline), time.Now(), inputModel.UserId).Scan(inputModel)
+	res := r.db.Raw("UPDATE user_list SET is_online = ?, updated_at = now()+ interval '7 hour' WHERE user_id = ? RETURNING *", string(inputModel.IsOnline), inputModel.UserId).Scan(inputModel)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -61,7 +60,7 @@ func (r *userRepo) UpdateIsOnline(inputModel *model.UserList) (*model.UserList, 
 
 func (r *userRepo) UpdateIsSOS(inputModel *model.UserList) (*model.UserList, error) {
 
-	res := r.db.Raw("UPDATE user_list SET is_sos = ?, updated_at = ? WHERE user_id = ? RETURNING *", string(inputModel.IsSOS), time.Now(), inputModel.UserId).Scan(inputModel)
+	res := r.db.Raw("UPDATE user_list SET is_sos = ?, updated_at = now()+ interval '7 hour' WHERE user_id = ? RETURNING *", string(inputModel.IsSOS), inputModel.UserId).Scan(inputModel)
 	if res.Error != nil {
 		return nil, res.Error
 	}
