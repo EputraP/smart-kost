@@ -25,7 +25,7 @@ func (h bcryptHash) Hash(value string) (string, error) {
 }
 
 func (h bcryptHash) IsEqual(hashed string, rawValue string) (bool, error) {
-	// println("efwfwefwefwegweg")
+
 	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(rawValue))
 
 	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {

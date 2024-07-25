@@ -39,8 +39,6 @@ func CreateAuth(tokenChecker tokenprovider.JWTTokenProvider) gin.HandlerFunc {
 
 func extractToken(authHeader string) (string, error) {
 	splits := strings.Split(authHeader, " ")
-	println(authHeader)
-	println(splits)
 
 	if len(splits) != 2 || splits[0] != "Bearer" {
 		return "", errs.InvalidBearerFormat
