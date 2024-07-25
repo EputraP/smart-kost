@@ -11,21 +11,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserHandler struct {
-	userService service.UserService
+type AuthHandler struct {
+	authService service.AuthService
 }
 
-type UserHandlerConfig struct {
-	UserService service.UserService
+type AuthHandlerConfig struct {
+	AuthService service.AuthService
 }
 
-func NewUserRawHandler(config UserHandlerConfig) *UserHandler {
-	return &UserHandler{
-		userService: config.UserService,
+func NewAuthRawHandler(config AuthHandlerConfig) *AuthHandler {
+	return &AuthHandler{
+		authService: config.AuthService,
 	}
 }
 
-func (h UserHandler) Login(c *gin.Context) {
+func (h AuthHandler) Login(c *gin.Context) {
 	var loginUser dto.LoginBody
 
 	if err := c.ShouldBindJSON(&loginUser); err != nil {
@@ -33,7 +33,7 @@ func (h UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.userService.Login(loginUser)
+	resp, err := h.authService.Login(loginUser)
 
 	if err != nil {
 		if errors.Is(err, errs.PasswordDoesntMatch) ||
@@ -50,7 +50,7 @@ func (h UserHandler) Login(c *gin.Context) {
 
 }
 
-func (h UserHandler) SignUp(c *gin.Context) {
+func (h AuthHandler) SignUp(c *gin.Context) {
 	var createUser dto.User
 
 	if err := c.ShouldBindJSON(&createUser); err != nil {
@@ -58,7 +58,7 @@ func (h UserHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.userService.SignUp(createUser)
+	resp, err := h.authService.SignUp(createUser)
 
 	if err != nil {
 		response.Error(c, 400, err.Error())

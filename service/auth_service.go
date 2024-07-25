@@ -12,32 +12,32 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserService interface {
+type AuthService interface {
 	Login(input dto.LoginBody) (*dto.LoginResponse, error)
 	SignUp(input dto.User) (*dto.User, error)
 }
 
-type userService struct {
+type authService struct {
 	userRepo    repository.UserRepository
 	hasher      hasher.Hasher
 	jwtProvider tokenprovider.JWTTokenProvider
 }
 
-type UserServiceConfig struct {
+type AuthServiceConfig struct {
 	UserRepo    repository.UserRepository
 	Hasher      hasher.Hasher
 	JwtProvider tokenprovider.JWTTokenProvider
 }
 
-func NewUserService(config UserServiceConfig) UserService {
-	return &userService{
+func NewUserService(config AuthServiceConfig) AuthService {
+	return &authService{
 		userRepo:    config.UserRepo,
 		hasher:      config.Hasher,
 		jwtProvider: config.JwtProvider,
 	}
 }
 
-func (ts userService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
+func (ts authService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
 	lowerUsername := strings.ToLower(input.Username)
 	account, err := ts.userRepo.GetUserByUsername(&model.UserList{Username: lowerUsername})
 	if err != nil {
@@ -65,7 +65,7 @@ func (ts userService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
 
 }
 
-func (ts userService) SignUp(input dto.User) (*dto.User, error) {
+func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Pass), 10)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func (ts userService) SignUp(input dto.User) (*dto.User, error) {
 	return resp, err
 }
 
-func (ts userService) generateLoginResponse(user *model.UserList) (*dto.LoginResponse, error) {
+func (ts authService) generateLoginResponse(user *model.UserList) (*dto.LoginResponse, error) {
 	accesToken, err := ts.jwtProvider.GenerateAccessToken(*user)
 
 	if err != nil {

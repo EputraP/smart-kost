@@ -9,7 +9,7 @@ import (
 type Handlers struct {
 	Test       *handler.TestHandler
 	HumTempRaw *handler.HumTempRawHandler
-	User       *handler.UserHandler
+	Auth       *handler.AuthHandler
 }
 type Middlewares struct {
 	Auth gin.HandlerFunc
@@ -17,8 +17,12 @@ type Middlewares struct {
 
 func Build(srv *gin.Engine, h Handlers, middlewares Middlewares) {
 	auth := srv.Group("/auth")
-	auth.POST("/register", h.User.SignUp)
-	auth.POST("/login", h.User.Login)
+	auth.POST("/register", h.Auth.SignUp)
+	auth.POST("/login", h.Auth.Login)
+
+	// user := srv.Group("/user")
+	// user.PUT("/update-online", h.User.UpdateOnline)
+	// user.PUT("/update-sos", h.User.UpdateSOS)
 
 	test := srv.Group("test")
 	test.GET("/", middlewares.Auth, h.Test.Test)
