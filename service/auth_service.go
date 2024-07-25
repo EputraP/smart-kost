@@ -43,6 +43,10 @@ func (ts authService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	_, err = ts.userRepo.UpdateIsOnline(&model.UserList{UserId: account.UserId, IsOnline: "1"})
+	if err != nil {
+		return nil, err
+	}
 
 	passwordOk, err := ts.hasher.IsEqual(account.Pass, input.Pass)
 
