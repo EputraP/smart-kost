@@ -104,6 +104,13 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 		UserService: userService,
 	})
 
+	cornJob := middleware.NewCorn(
+		middleware.CornJobConfig{
+			UserRepo: userRepo,
+		},
+	)
+	cornJob.UpdateUserToOffline()
+
 	handlers = routes.Handlers{
 		Test:       test,
 		HumTempRaw: humTempRawHandler,
