@@ -98,7 +98,6 @@ func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 		StatusId:                resUserCurrentLocation.StatusId,
 		UserCurrentLocationLat:  resUserCurrentLocation.UserCurrentLocationLat,
 		UserCurrentLocationLong: resUserCurrentLocation.UserCurrentLocationLong,
-		CurrentLocation:         resUserCurrentLocation.CurrentLocation,
 	}
 
 	resp := &dto.User{
