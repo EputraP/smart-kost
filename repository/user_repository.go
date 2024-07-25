@@ -2,14 +2,15 @@ package repository
 
 import (
 	"smart-kost-backend/model"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	
-	CreateUser (inputModel *model.UserList) (*model.UserList, error)
-	GetUserByUsername (inputModel *model.UserList) (*model.UserList, error)
+	CreateUser(inputModel *model.UserList) (*model.UserList, error)
+	GetUserByUsername(inputModel *model.UserList) (*model.UserList, error)
+	UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error)
 }
 
 type userRepo struct {
@@ -28,7 +29,7 @@ func (r userRepo) WithTx(tx *gorm.DB) UserRepository {
 	}
 }
 
-func (r *userRepo)CreateUser (inputModel *model.UserList) (*model.UserList, error) {
+func (r *userRepo) CreateUser(inputModel *model.UserList) (*model.UserList, error) {
 
 	if dbc := r.db.Create(inputModel).Scan(inputModel); dbc.Error != nil {
 		return nil, dbc.Error
@@ -37,12 +38,22 @@ func (r *userRepo)CreateUser (inputModel *model.UserList) (*model.UserList, erro
 	return inputModel, nil
 }
 
-func (r *userRepo)GetUserByUsername (inputModel *model.UserList) (*model.UserList, error) {
+func (r *userRepo) GetUserByUsername(inputModel *model.UserList) (*model.UserList, error) {
 
 	res := r.db.Where("username = ?", inputModel.Username).First(&model.UserList{}).Scan(inputModel)
 	if res.Error != nil {
 		return nil, res.Error
 	}
+	return inputModel, nil
+}
+
+func (r *userRepo) UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error) {
+
+	res := r.db.Raw("UPDATE user_list SET is_online = ?, updated_at = ? WHERE user_id = ? RETURNING *", string(inputModel.IsOnline), time.Now(), inputModel.UserId).Scan(inputModel)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
 	return inputModel, nil
 
 }
