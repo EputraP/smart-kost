@@ -1,8 +1,9 @@
 package dto
 
 type User struct {
-	UserName string `json:"username" gorm:"type:string;not null"`
-	Pass     string `json:"pass" gorm:"type:string;not null"`
+	UserName                string               `json:"username" gorm:"type:string;not null"`
+	Pass                    string               `json:"pass" gorm:"type:string;not null"`
+	UserCurrentLocationData *UserCurrentLocation `json:"user_current_location_data" `
 }
 
 type UserResponse struct {

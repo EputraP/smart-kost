@@ -75,16 +75,17 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 
 	humTempRawRepo := repository.NewHumTempRawRepository(db)
 	userRepo := repository.NewUserRepository(db)
+	userCurrentLocationRepo := repository.NewUserCurrentLocationRepository(db)
 
 	testService := service.NewTestService()
 	humTempRawService := service.NewHumTempRawService(service.HumTempRawServiceConfig{
 		HumTempRawRepo: humTempRawRepo,
 	})
-
 	authService := service.NewAuthService(service.AuthServiceConfig{
-		UserRepo:    userRepo,
-		Hasher:      hasher,
-		JwtProvider: tokenprovider.GetProvider(),
+		UserRepo:                userRepo,
+		UserCurrentLocationRepo: userCurrentLocationRepo,
+		Hasher:                  hasher,
+		JwtProvider:             tokenprovider.GetProvider(),
 	})
 
 	userService := service.NewUserService(service.UserServiceConfig{

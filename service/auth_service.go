@@ -19,22 +19,25 @@ type AuthService interface {
 }
 
 type authService struct {
-	userRepo    repository.UserRepository
-	hasher      hasher.Hasher
-	jwtProvider tokenprovider.JWTTokenProvider
+	userRepo                repository.UserRepository
+	userCurrentLocationRepo repository.UserCurrentLocationRepo
+	hasher                  hasher.Hasher
+	jwtProvider             tokenprovider.JWTTokenProvider
 }
 
 type AuthServiceConfig struct {
-	UserRepo    repository.UserRepository
-	Hasher      hasher.Hasher
-	JwtProvider tokenprovider.JWTTokenProvider
+	UserRepo                repository.UserRepository
+	UserCurrentLocationRepo repository.UserCurrentLocationRepo
+	Hasher                  hasher.Hasher
+	JwtProvider             tokenprovider.JWTTokenProvider
 }
 
 func NewAuthService(config AuthServiceConfig) AuthService {
 	return &authService{
-		userRepo:    config.UserRepo,
-		hasher:      config.Hasher,
-		jwtProvider: config.JwtProvider,
+		userRepo:                config.UserRepo,
+		userCurrentLocationRepo: config.UserCurrentLocationRepo,
+		hasher:                  config.Hasher,
+		jwtProvider:             config.JwtProvider,
 	}
 }
 
@@ -81,8 +84,26 @@ func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	resUserCurrentLocation, err := ts.userCurrentLocationRepo.CreateCurrentUserData(&model.UserCurrentLocation{
+		UserId:   res.UserId,
+		StatusId: 2,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	userCurrentLocationData := &dto.UserCurrentLocation{
+		UserCurrentLocationId:   resUserCurrentLocation.UserCurrentLocationId,
+		UserId:                  resUserCurrentLocation.UserId,
+		StatusId:                resUserCurrentLocation.StatusId,
+		UserCurrentLocationLat:  resUserCurrentLocation.UserCurrentLocationLat,
+		UserCurrentLocationLong: resUserCurrentLocation.UserCurrentLocationLong,
+		CurrentLocation:         resUserCurrentLocation.CurrentLocation,
+	}
+
 	resp := &dto.User{
-		UserName: res.Username,
+		UserName:                res.Username,
+		UserCurrentLocationData: userCurrentLocationData,
 	}
 
 	return resp, err
