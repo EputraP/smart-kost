@@ -22,8 +22,8 @@ func Build(srv *gin.Engine, h Handlers, middlewares Middlewares) {
 	auth.POST("/login", h.Auth.Login)
 
 	user := srv.Group("/user")
-	user.PUT("/update-online", h.User.UpdateOnline)
-	user.PUT("/update-sos", h.User.UpdateSOS)
+	user.PUT("/update-online", middlewares.Auth, h.User.UpdateOnline)
+	user.PUT("/update-sos", middlewares.Auth, h.User.UpdateSOS)
 
 	test := srv.Group("test")
 	test.GET("/", middlewares.Auth, h.Test.Test)
