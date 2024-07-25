@@ -29,7 +29,7 @@ type AuthServiceConfig struct {
 	JwtProvider tokenprovider.JWTTokenProvider
 }
 
-func NewUserService(config AuthServiceConfig) AuthService {
+func NewAuthService(config AuthServiceConfig) AuthService {
 	return &authService{
 		userRepo:    config.UserRepo,
 		hasher:      config.Hasher,

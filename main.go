@@ -80,7 +80,7 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 		HumTempRawRepo: humTempRawRepo,
 	})
 	hasher := hasher.NewBcrypt(10)
-	authService := service.NewUserService(service.AuthServiceConfig{
+	authService := service.NewAuthService(service.AuthServiceConfig{
 		UserRepo:    userRepo,
 		Hasher:      hasher,
 		JwtProvider: tokenprovider.GetProvider(),
