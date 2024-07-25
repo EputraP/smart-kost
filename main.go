@@ -80,7 +80,7 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 		HumTempRawRepo: humTempRawRepo,
 	})
 	hasher := hasher.NewBcrypt(10)
-	userService := service.NewUserService(service.UserServiceConfig{
+	authService := service.NewUserService(service.AuthServiceConfig{
 		UserRepo:    userRepo,
 		Hasher:      hasher,
 		JwtProvider: tokenprovider.GetProvider(),
@@ -92,14 +92,14 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	humTempRawHandler := handler.NewHumTempRawHandler(handler.HumTempRawHandlerConfig{
 		HumTempRawService: humTempRawService,
 	})
-	userHandler := handler.NewUserRawHandler(handler.UserHandlerConfig{
-		UserService: userService,
+	authHandler := handler.NewAuthRawHandler(handler.AuthHandlerConfig{
+		AuthService: authService,
 	})
 
 	handlers = routes.Handlers{
 		Test:       test,
 		HumTempRaw: humTempRawHandler,
-		User:       userHandler,
+		Auth:       authHandler,
 	}
 	return
 }
