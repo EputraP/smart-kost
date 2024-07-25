@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"smart-kost-backend/dto"
+	"smart-kost-backend/errs"
 	"smart-kost-backend/service"
 	"smart-kost-backend/util/response"
 
@@ -22,9 +24,17 @@ func NewUserCurrentLocationRawHandler(config UserCurrentLocationHandlerConfig) *
 }
 
 func (h UserCurrentLocationHandler) UpdateUserCurrentLocation(c *gin.Context) {
+	var userLocation dto.UpdateUserLocation
 
-	h.userCurrentLocationService.UpdateUserCurrentLocation()
-
-	response.JSON(c, 201, "Update online status success", "")
+	if err := c.ShouldBindJSON(&userLocation); err != nil {
+		response.Error(c, 400, errs.InvalidRequestBody.Error())
+		return
+	}
+	resp, err := h.userCurrentLocationService.UpdateUserCurrentLocation(userLocation)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.JSON(c, 201, "Update online status success", resp)
 
 }

@@ -10,7 +10,6 @@ type UserCurrentLocation struct {
 	StatusId                int       `json:"status_id" gorm:"type:int;not null"`
 	UserCurrentLocationLat  string    `json:"lat" gorm:"type:string"`
 	UserCurrentLocationLong string    `json:"long" gorm:"type:string"`
-	CurrentLocation         string    `json:"current_location" gorm:"type:string"`
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
 }

@@ -1,12 +1,16 @@
 package service
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
+	"smart-kost-backend/dto"
+	"smart-kost-backend/model"
 	"smart-kost-backend/repository"
 )
 
 type UserCurrentLocationService interface {
-	UpdateUserCurrentLocation()
+	UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error)
 }
 
 type userCurrentLocationService struct {
@@ -23,29 +27,48 @@ func NewUserCurrentLocationService(config UserCurrentLocationServiceConfig) User
 	}
 }
 
-func (s userCurrentLocationService) UpdateUserCurrentLocation() {
-	GetAddressFromLatLong()
-	// var resp *dto.UserResponse
-	// res, err := s.userRepo.UpdateIsOnline(&model.UserList{UserId: input.UserId, IsOnline: input.IsOnline})
+func (s userCurrentLocationService) UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error) {
+	// res := GetAddressFromLatLong("-6.927770970656957", "107.61239014399705")
+	// fmt.Println(res.DisplayName)
+	// fmt.Println(res.Address.Road)
 
-	// if err != nil {
-	// 	println(err)
-	// }
+	var resp *dto.UserCurrentLocation
+	res, err := s.userCurrentLocationRepo.UpdateLatLong(&model.UserCurrentLocation{UserId: input.UserId, UserCurrentLocationLat: input.UserCurrentLocationLat, UserCurrentLocationLong: input.UserCurrentLocationLong})
 
-	// resp = &dto.UserResponse{
-	// 	UserId:   res.UserId,
-	// 	Username: res.Username,
-	// 	IsOnline: res.IsOnline,
-	// 	IsSOS:    res.IsSOS,
-	// }
-
-	// return resp, nil
-}
-func GetAddressFromLatLong() {
-	apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=-6.927770970656957&lon=107.61239014399705"
-	res, err := http.Get(apiUrl)
-	if res != nil {
-		println(err)
+	if err != nil {
+		return nil, err
 	}
-	println(res)
+
+	resp = &dto.UserCurrentLocation{
+		UserId:                  res.UserId,
+		StatusId:                res.StatusId,
+		UserCurrentLocationLat:  res.UserCurrentLocationLat,
+		UserCurrentLocationLong: res.UserCurrentLocationLong,
+	}
+
+	return resp, nil
+}
+
+func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
+
+	var locationData *dto.GetLocation
+	apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
+	resp, err := http.Get(apiUrl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &locationData)
+	if err != nil {
+		return nil, err
+	}
+
+	return locationData, nil
+
 }
