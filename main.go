@@ -47,6 +47,10 @@ func main() {
 
 func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 
+	hasher := hasher.NewBcrypt(10)
+
+	db := dbstore.Get()
+
 	appName := os.Getenv(constant.EnvKeyAppName)
 	jwtSecret := os.Getenv(constant.EnvKeyJWTSecret)
 	refreshTokenDurationStr := os.Getenv(constant.EnvKeyRefreshTokenDuration)
@@ -54,7 +58,6 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	accessTokenDurationStr := os.Getenv(constant.EnvKeyAccessTokenDuration)
 
 	refreshTokenDuration, err := strconv.Atoi(refreshTokenDurationStr)
-
 	if err != nil {
 		log.Fatalln("error creating handlers and middleware", err)
 	}
@@ -70,8 +73,6 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 		Auth: middleware.CreateAuth(jwtProvider),
 	}
 
-	db := dbstore.Get()
-
 	humTempRawRepo := repository.NewHumTempRawRepository(db)
 	userRepo := repository.NewUserRepository(db)
 
@@ -79,11 +80,15 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	humTempRawService := service.NewHumTempRawService(service.HumTempRawServiceConfig{
 		HumTempRawRepo: humTempRawRepo,
 	})
-	hasher := hasher.NewBcrypt(10)
+
 	authService := service.NewAuthService(service.AuthServiceConfig{
 		UserRepo:    userRepo,
 		Hasher:      hasher,
 		JwtProvider: tokenprovider.GetProvider(),
+	})
+
+	userService := service.NewUserService(service.UserServiceConfig{
+		UserRepo: userRepo,
 	})
 
 	test := handler.NewTestHandler(handler.TestHandlerConfig{
@@ -95,11 +100,15 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 	authHandler := handler.NewAuthRawHandler(handler.AuthHandlerConfig{
 		AuthService: authService,
 	})
+	userHandler := handler.NewUserRawHandler(handler.UserHandlerConfig{
+		UserService: userService,
+	})
 
 	handlers = routes.Handlers{
 		Test:       test,
 		HumTempRaw: humTempRawHandler,
 		Auth:       authHandler,
+		User:       userHandler,
 	}
 	return
 }

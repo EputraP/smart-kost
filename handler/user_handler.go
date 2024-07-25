@@ -2,6 +2,7 @@ package handler
 
 import (
 	"smart-kost-backend/service"
+	"smart-kost-backend/util/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,7 @@ func (h UserHandler) UpdateOnline(c *gin.Context) {
 	// 	return
 	// }
 
-	// resp, err := h.Service.Login(loginUser)
+	h.userService.UpdateOnline()
 
 	// if err != nil {
 	// 	if errors.Is(err, errs.PasswordDoesntMatch) ||
@@ -41,7 +42,7 @@ func (h UserHandler) UpdateOnline(c *gin.Context) {
 	// 	return
 	// }
 
-	// response.JSON(c, 200, "Login success", resp)
+	response.JSON(c, 201, "Update online status success", "")
 
 }
 
@@ -53,7 +54,7 @@ func (h UserHandler) UpdateSOS(c *gin.Context) {
 	// 	return
 	// }
 
-	// resp, err := h.Service.Login(loginUser)
+	h.userService.UpdateSOS()
 
 	// if err != nil {
 	// 	if errors.Is(err, errs.PasswordDoesntMatch) ||
@@ -66,6 +67,6 @@ func (h UserHandler) UpdateSOS(c *gin.Context) {
 	// 	return
 	// }
 
-	// response.JSON(c, 200, "Login success", resp)
+	response.JSON(c, 201, "Login success", "")
 
 }

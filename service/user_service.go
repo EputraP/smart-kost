@@ -1,34 +1,25 @@
 package service
 
 import (
-	"smart-kost-backend/dto"
 	"smart-kost-backend/repository"
-	"smart-kost-backend/util/hasher"
-	"smart-kost-backend/util/tokenprovider"
 )
 
 type UserService interface {
-	Login(input dto.LoginBody) (*dto.LoginResponse, error)
-	SignUp(input dto.User) (*dto.User, error)
+	UpdateOnline()
+	UpdateSOS()
 }
 
 type userService struct {
-	userRepo    repository.UserRepository
-	hasher      hasher.Hasher
-	jwtProvider tokenprovider.JWTTokenProvider
+	userRepo repository.UserRepository
 }
 
 type UserServiceConfig struct {
-	UserRepo    repository.UserRepository
-	Hasher      hasher.Hasher
-	JwtProvider tokenprovider.JWTTokenProvider
+	UserRepo repository.UserRepository
 }
 
 func NewUserService(config UserServiceConfig) UserService {
-	return &authService{
-		userRepo:    config.UserRepo,
-		hasher:      config.Hasher,
-		jwtProvider: config.JwtProvider,
+	return &userService{
+		userRepo: config.UserRepo,
 	}
 }
 
