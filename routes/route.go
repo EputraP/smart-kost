@@ -28,7 +28,7 @@ func Build(srv *gin.Engine, h Handlers, middlewares Middlewares) {
 	user.PUT("/update-sos", middlewares.Auth, h.User.UpdateSOS)
 
 	userCurrentLocation := srv.Group("/user-location")
-	userCurrentLocation.PUT("/update", h.UserCurrentLocation.UpdateUserCurrentLocation)
+	userCurrentLocation.PUT("/update", middlewares.Auth, h.UserCurrentLocation.UpdateUserCurrentLocation)
 
 	test := srv.Group("test")
 	test.GET("/", middlewares.Auth, h.Test.Test)
