@@ -32,9 +32,6 @@ func (r userRepo) WithTx(tx *gorm.DB) UserRepository {
 
 func (r *userRepo) CreateUser(inputModel *model.UserList) (*model.UserList, error) {
 	res := r.db.Raw("INSERT INTO user_list (username , pass , is_online, is_sos) VALUES (?,?,?,?) RETURNING *;", inputModel.Username, inputModel.Pass, "0", "0").Scan(inputModel)
-	// if dbc := r.db.Create(inputModel).Scan(inputModel); dbc.Error != nil {
-	// 	return nil, dbc.Error
-	// }
 	if res.Error != nil {
 		return nil, res.Error
 	}
