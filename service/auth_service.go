@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+	"math/rand"
 	"smart-kost-backend/dto"
 	"smart-kost-backend/errs"
 	"smart-kost-backend/model"
@@ -85,9 +87,17 @@ func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	randomColor := GenerateRandomColor()
+	stringColor, err := json.Marshal(randomColor)
+	if err != nil {
+		return nil, err
+	}
+
 	resUserCurrentLocation, err := ts.userCurrentLocationRepo.CreateCurrentUserData(&model.UserCurrentLocation{
-		UserId:   res.UserId,
-		StatusId: 2,
+		UserId:    res.UserId,
+		StatusId:  2,
+		IconColor: string(stringColor),
 	})
 	if err != nil {
 		return nil, err
@@ -117,6 +127,19 @@ func (ts authService) Logout(input int) (string, error) {
 	}
 
 	return "", err
+}
+
+func GenerateRandomColor() *dto.IconColorRGB {
+	var res *dto.IconColorRGB
+	red := rand.Intn(255)
+	green := rand.Intn(255)
+	blue := rand.Intn(255)
+	res = &dto.IconColorRGB{
+		Red:   red,
+		Blue:  blue,
+		Green: green,
+	}
+	return res
 }
 
 func (ts authService) generateLoginResponse(user *model.UserList) (*dto.LoginResponse, error) {

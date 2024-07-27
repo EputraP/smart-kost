@@ -39,3 +39,9 @@ type UpdateUserSOS struct {
 	UserId int    `json:"user_id" `
 	IsSOS  string `json:"is_sos" gorm:"type:string"`
 }
+
+type IconColorRGB struct {
+	Red   int `json:"red" gorm:"type:integer"`
+	Green int `json:"green" gorm:"type:integer"`
+	Blue  int `json:"blue" gorm:"type:integer"`
+}
