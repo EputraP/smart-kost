@@ -13,3 +13,12 @@ type UserCurrentLocation struct {
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
 }
+
+type GetUserCurrentLocation struct {
+	Username   string `json:"username" gorm:"type:string"`
+	IsOnline   string `json:"is_online" gorm:"type:string"`
+	IsSOS      string `json:"is_sos" gorm:"type:string"`
+	StatusName string `json:"status_name" gorm:"type:string"`
+	Lat        string `json:"lat" gorm:"type:string"`
+	Long       string `json:"long" gorm:"type:string"`
+}
