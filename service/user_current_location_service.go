@@ -87,6 +87,7 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 			Long:       value.Long,
 			Lat:        value.Lat,
 			Address:    address.DisplayName,
+			IconColor:  value.IconColor,
 		})
 	}
 	return resp, nil

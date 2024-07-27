@@ -23,4 +23,5 @@ type GetUserCurrentLocation struct {
 	StatusName string `json:"status_name" gorm:"type:string"`
 	Lat        string `json:"lat" gorm:"type:string"`
 	Long       string `json:"long" gorm:"type:string"`
+	IconColor  string `json:"icon_color" gorm:"type:string"`
 }
