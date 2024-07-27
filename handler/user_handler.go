@@ -24,7 +24,7 @@ func NewUserRawHandler(config UserHandlerConfig) *UserHandler {
 }
 
 func (h UserHandler) UpdateOnline(c *gin.Context) {
-	var userOnline dto.UpdateUserOnlineSOS
+	var userOnline dto.UpdateUserOnline
 
 	if err := c.ShouldBindJSON(&userOnline); err != nil {
 		response.Error(c, 400, errs.InvalidRequestBody.Error())
@@ -38,23 +38,5 @@ func (h UserHandler) UpdateOnline(c *gin.Context) {
 	}
 
 	response.JSON(c, 201, "Update online status success", resp)
-
-}
-
-func (h UserHandler) UpdateSOS(c *gin.Context) {
-	var userOnline dto.UpdateUserOnlineSOS
-
-	if err := c.ShouldBindJSON(&userOnline); err != nil {
-		response.Error(c, 400, errs.InvalidRequestBody.Error())
-		return
-	}
-
-	resp, err := h.userService.UpdateSOS(userOnline)
-	if err != nil {
-		response.Error(c, 400, err.Error())
-		return
-	}
-
-	response.JSON(c, 201, "Update SOS status success", resp)
 
 }

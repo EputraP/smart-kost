@@ -34,3 +34,8 @@ type GetUserCurrentLocationResponse struct {
 	Long       string `json:"long" gorm:"type:string"`
 	Address    string `json:"address" gorm:"type:string"`
 }
+
+type UpdateUserSOS struct {
+	UserId int    `json:"user_id" `
+	IsSOS  string `json:"is_sos" gorm:"type:string"`
+}

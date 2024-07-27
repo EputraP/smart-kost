@@ -9,6 +9,7 @@ import (
 type UserCurrentLocationRepo interface {
 	CreateCurrentUserData(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error)
 	GetCurrentUserData() ([]*model.GetUserCurrentLocation, error)
+	UpdateIsSOS(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error)
 	UpdateLatLong(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error)
 	UpdateLocationStatus()
 }
@@ -50,6 +51,16 @@ func (r *userCurrentLocationRepo) GetCurrentUserData() ([]*model.GetUserCurrentL
 	}
 
 	return dbResultModel, nil
+}
+
+func (r *userCurrentLocationRepo) UpdateIsSOS(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error) {
+
+	res := r.db.Raw("UPDATE user_current_location SET is_sos = ?, updated_at = now()+ interval '7 hour' WHERE user_id = ? RETURNING *", string(inputModel.IsSOS), inputModel.UserId).Scan(inputModel)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return inputModel, nil
 }
 
 func (r *userCurrentLocationRepo) UpdateLatLong(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error) {

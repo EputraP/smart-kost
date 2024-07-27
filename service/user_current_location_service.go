@@ -10,6 +10,7 @@ import (
 )
 
 type UserCurrentLocationService interface {
+	UpdateSOS(input dto.UpdateUserSOS) (*dto.UpdateUserSOS, error)
 	UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error)
 	GetUserCurrentLocation() ([]*dto.GetUserCurrentLocationResponse, error)
 }
@@ -42,6 +43,22 @@ func (s userCurrentLocationService) UpdateUserCurrentLocation(input dto.UpdateUs
 		StatusId:                res.StatusId,
 		UserCurrentLocationLat:  res.UserCurrentLocationLat,
 		UserCurrentLocationLong: res.UserCurrentLocationLong,
+	}
+
+	return resp, nil
+}
+
+func (s userCurrentLocationService) UpdateSOS(input dto.UpdateUserSOS) (*dto.UpdateUserSOS, error) {
+	var resp *dto.UpdateUserSOS
+	res, err := s.userCurrentLocationRepo.UpdateIsSOS(&model.UserCurrentLocation{UserId: input.UserId, IsSOS: input.IsSOS})
+
+	if err != nil {
+		println(err)
+	}
+
+	resp = &dto.UpdateUserSOS{
+		UserId: res.UserId,
+		IsSOS:  res.IsSOS,
 	}
 
 	return resp, nil

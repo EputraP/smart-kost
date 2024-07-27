@@ -10,7 +10,6 @@ type UserRepository interface {
 	CreateUser(inputModel *model.UserList) (*model.UserList, error)
 	GetUserByUsername(inputModel *model.UserList) (*model.UserList, error)
 	UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error)
-	UpdateIsSOS(inputModel *model.UserList) (*model.UserList, error)
 	UpdateUserOffline()
 }
 
@@ -50,16 +49,6 @@ func (r *userRepo) GetUserByUsername(inputModel *model.UserList) (*model.UserLis
 func (r *userRepo) UpdateIsOnline(inputModel *model.UserList) (*model.UserList, error) {
 
 	res := r.db.Raw("UPDATE user_list SET is_online = ?, updated_at = now()+ interval '7 hour' WHERE user_id = ? RETURNING *", string(inputModel.IsOnline), inputModel.UserId).Scan(inputModel)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-
-	return inputModel, nil
-}
-
-func (r *userRepo) UpdateIsSOS(inputModel *model.UserList) (*model.UserList, error) {
-
-	res := r.db.Raw("UPDATE user_list SET is_sos = ?, updated_at = now()+ interval '7 hour' WHERE user_id = ? RETURNING *", string(inputModel.IsSOS), inputModel.UserId).Scan(inputModel)
 	if res.Error != nil {
 		return nil, res.Error
 	}

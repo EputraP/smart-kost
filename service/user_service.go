@@ -7,8 +7,7 @@ import (
 )
 
 type UserService interface {
-	UpdateOnline(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error)
-	UpdateSOS(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error)
+	UpdateOnline(input dto.UpdateUserOnline) (*dto.UserResponse, error)
 }
 
 type userService struct {
@@ -25,7 +24,7 @@ func NewUserService(config UserServiceConfig) UserService {
 	}
 }
 
-func (s userService) UpdateOnline(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error) {
+func (s userService) UpdateOnline(input dto.UpdateUserOnline) (*dto.UserResponse, error) {
 
 	var resp *dto.UserResponse
 	res, err := s.userRepo.UpdateIsOnline(&model.UserList{UserId: input.UserId, IsOnline: input.IsOnline})
@@ -38,24 +37,6 @@ func (s userService) UpdateOnline(input dto.UpdateUserOnlineSOS) (*dto.UserRespo
 		UserId:   res.UserId,
 		Username: res.Username,
 		IsOnline: res.IsOnline,
-		IsSOS:    res.IsSOS,
-	}
-
-	return resp, nil
-}
-func (s userService) UpdateSOS(input dto.UpdateUserOnlineSOS) (*dto.UserResponse, error) {
-	var resp *dto.UserResponse
-	res, err := s.userRepo.UpdateIsSOS(&model.UserList{UserId: input.UserId, IsSOS: input.IsSOS})
-
-	if err != nil {
-		println(err)
-	}
-
-	resp = &dto.UserResponse{
-		UserId:   res.UserId,
-		Username: res.Username,
-		IsOnline: res.IsOnline,
-		IsSOS:    res.IsSOS,
 	}
 
 	return resp, nil
