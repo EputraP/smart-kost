@@ -73,41 +73,59 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 	}
 
 	for _, value := range res {
+
+		address, err := GetAddressFromLatLong(value.Lat, value.Long)
+
+		if err != nil {
+			return nil, err
+		}
 		resp = append(resp, &dto.GetUserCurrentLocationResponse{
 			Username:   value.Username,
 			IsOnline:   value.IsOnline,
 			IsSOS:      value.IsSOS,
 			StatusName: value.StatusName,
+			Long:       value.Long,
+			Lat:        value.Lat,
+			Address:    address.DisplayName,
 		})
 	}
-
-	// res := GetAddressFromLatLong("-6.927770970656957", "107.61239014399705")
-	// fmt.Println(res.DisplayName)
-	// fmt.Println(res.Address.Road)
 	return resp, nil
-
 }
 
 func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
 
 	var locationData *dto.GetLocation
-	apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
-	resp, err := http.Get(apiUrl)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	if len(lat) != 0 && len(long) != 0 {
+		apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
+		resp, err := http.Get(apiUrl)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
 
-	err = json.Unmarshal(body, &locationData)
-	if err != nil {
-		return nil, err
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(body, &locationData)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var address *dto.Address = &dto.Address{
+			Road:        "",
+			Subdistrict: "",
+			City:        "",
+			Province:    "",
+		}
+
+		locationData = &dto.GetLocation{
+			DisplayName: "",
+			Address:     *address,
+		}
 	}
 
 	return locationData, nil
-
 }
