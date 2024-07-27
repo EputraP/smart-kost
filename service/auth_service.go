@@ -75,11 +75,12 @@ func (ts authService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
 
 func (ts authService) SignUp(input dto.User) (*dto.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Pass), 10)
+	usernameLower := strings.ToLower(input.UserName)
 
 	if err != nil {
 		return nil, err
 	}
-	res, err := ts.userRepo.CreateUser(&model.UserList{Username: input.UserName, Pass: string(hash)})
+	res, err := ts.userRepo.CreateUser(&model.UserList{Username: usernameLower, Pass: string(hash)})
 
 	if err != nil {
 		return nil, err
