@@ -29,7 +29,7 @@ func (r userCurrentLocationRepo) WithTx(tx *gorm.DB) UserCurrentLocationRepo {
 
 func (r *userCurrentLocationRepo) CreateCurrentUserData(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error) {
 
-	res := r.db.Raw("INSERT INTO user_current_location (user_id , status_id , lat, long) VALUES (?,?,?,?) RETURNING *;", inputModel.UserId, inputModel.StatusId, inputModel.UserCurrentLocationLat, inputModel.UserCurrentLocationLong).Scan(inputModel)
+	res := r.db.Raw("INSERT INTO user_current_location (user_id , status_id , lat, long, prev_lat, prev_long) VALUES (?,?,?,?,?,?) RETURNING *;", inputModel.UserId, inputModel.StatusId, inputModel.UserCurrentLocationLat, inputModel.UserCurrentLocationLong, nil, nil).Scan(inputModel)
 	if res.Error != nil {
 		return nil, res.Error
 	}
