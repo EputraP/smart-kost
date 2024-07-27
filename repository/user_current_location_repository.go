@@ -9,6 +9,7 @@ import (
 type UserCurrentLocationRepo interface {
 	CreateCurrentUserData(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error)
 	UpdateLatLong(inputModel *model.UserCurrentLocation) (*model.UserCurrentLocation, error)
+	UpdateLocationStatus()
 }
 
 type userCurrentLocationRepo struct {
@@ -45,4 +46,13 @@ func (r *userCurrentLocationRepo) UpdateLatLong(inputModel *model.UserCurrentLoc
 	}
 
 	return inputModel, nil
+}
+
+func (r *userCurrentLocationRepo) UpdateLocationStatus() {
+	var modelDb model.UserCurrentLocation
+	res := r.db.Raw("UPDATE user_current_location SET status_id  = case WHEN (extract(epoch from (now()+ interval '7 hour) - updated_at) / 60 < 1) and (prev_lat is not null or prev_long is not null) THEN 1 else 2 end").Scan(modelDb)
+	if res.Error != nil {
+		println(res.Error)
+	}
+
 }
