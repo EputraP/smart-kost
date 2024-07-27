@@ -112,7 +112,8 @@ func prepare() (handlers routes.Handlers, middlewares routes.Middlewares) {
 
 	cornJob := middleware.NewCorn(
 		middleware.CornJobConfig{
-			UserRepo: userRepo,
+			UserRepo:        userRepo,
+			UserCurrentRepo: userCurrentLocationRepo,
 		},
 	)
 	cornJob.UpdateUserToOffline()
