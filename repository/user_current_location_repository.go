@@ -50,7 +50,7 @@ func (r *userCurrentLocationRepo) UpdateLatLong(inputModel *model.UserCurrentLoc
 
 func (r *userCurrentLocationRepo) UpdateLocationStatus() {
 	var modelDb model.UserCurrentLocation
-	res := r.db.Raw("UPDATE user_current_location SET status_id  = case WHEN (extract(epoch from (now()+ interval '7 hour) - updated_at) / 60 < 1) and (prev_lat is not null or prev_long is not null) THEN 1 else 2 end").Scan(modelDb)
+	res := r.db.Raw("UPDATE user_current_location SET status_id  = case WHEN (extract(epoch from (now()+ interval '7 hour') - updated_at) / 60 < 5) and (prev_lat is not null or prev_long is not null) THEN 1 else 2 end").Scan(modelDb)
 	if res.Error != nil {
 		println(res.Error)
 	}
