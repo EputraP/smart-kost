@@ -11,6 +11,7 @@ import (
 
 type UserCurrentLocationService interface {
 	UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error)
+	GetUserCurrentLocation() ([]*dto.GetUserCurrentLocationResponse, error)
 }
 
 type userCurrentLocationService struct {
@@ -28,9 +29,6 @@ func NewUserCurrentLocationService(config UserCurrentLocationServiceConfig) User
 }
 
 func (s userCurrentLocationService) UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error) {
-	// res := GetAddressFromLatLong("-6.927770970656957", "107.61239014399705")
-	// fmt.Println(res.DisplayName)
-	// fmt.Println(res.Address.Road)
 
 	var resp *dto.UserCurrentLocation
 	res, err := s.userCurrentLocationRepo.UpdateLatLong(&model.UserCurrentLocation{UserId: input.UserId, UserCurrentLocationLat: input.UserCurrentLocationLat, UserCurrentLocationLong: input.UserCurrentLocationLong})
@@ -47,6 +45,30 @@ func (s userCurrentLocationService) UpdateUserCurrentLocation(input dto.UpdateUs
 	}
 
 	return resp, nil
+}
+
+func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurrentLocationResponse, error) {
+	var resp []*dto.GetUserCurrentLocationResponse
+
+	res, err := s.userCurrentLocationRepo.GetCurrentUserData()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, value := range res {
+		resp = append(resp, &dto.GetUserCurrentLocationResponse{
+			Username:   value.Username,
+			IsOnline:   value.IsOnline,
+			IsSOS:      value.IsSOS,
+			StatusName: value.StatusName,
+		})
+	}
+
+	// res := GetAddressFromLatLong("-6.927770970656957", "107.61239014399705")
+	// fmt.Println(res.DisplayName)
+	// fmt.Println(res.Address.Road)
+	return resp, nil
+
 }
 
 func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {

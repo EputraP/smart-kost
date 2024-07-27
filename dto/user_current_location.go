@@ -24,3 +24,13 @@ type Address struct {
 	City        string `json:"city" gorm:"type:string"`
 	Province    string `json:"province" gorm:"type:string"`
 }
+
+type GetUserCurrentLocationResponse struct {
+	Username   string `json:"username" gorm:"type:string"`
+	IsOnline   string `json:"is_online" gorm:"type:string"`
+	IsSOS      string `json:"is_sos" gorm:"type:string"`
+	StatusName string `json:"status_name" gorm:"type:string"`
+	Lat        string `json:"lat" gorm:"type:string"`
+	Long       string `json:"long" gorm:"type:string"`
+	Address    string `json:"address" gorm:"type:string"`
+}

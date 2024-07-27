@@ -38,3 +38,12 @@ func (h UserCurrentLocationHandler) UpdateUserCurrentLocation(c *gin.Context) {
 	response.JSON(c, 201, "Update online status success", resp)
 
 }
+func (h UserCurrentLocationHandler) GetCurrentUserLocation(c *gin.Context) {
+	resp, err := h.userCurrentLocationService.GetUserCurrentLocation()
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.JSON(c, 201, "Get current user data success", resp)
+
+}
