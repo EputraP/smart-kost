@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"io"
-	"net"
 	"net/http"
 	"smart-kost-backend/dto"
 	"smart-kost-backend/model"
@@ -99,9 +98,9 @@ func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
 	var locationData *dto.GetLocation
 
 	if len(lat) != 0 && len(long) != 0 {
-
-		apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
-		net.Listen("tcp4", apiUrl)
+		accessToken := "pk.6006ccd0ecc3de5a24ef402578b09b08"
+		// apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
+		apiUrl := "https://us1.locationiq.com/v1/reverse?key=" + accessToken + "&lat=" + lat + "&lon=" + long + "&format=json&"
 		resp, err := http.Get(apiUrl)
 		if err != nil {
 			return nil, err
