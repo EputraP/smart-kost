@@ -101,7 +101,7 @@ func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
 	if len(lat) != 0 && len(long) != 0 {
 
 		apiUrl := "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + long
-		net.Listen("tcp6", apiUrl)
+		net.Listen("tcp4", apiUrl)
 		resp, err := http.Get(apiUrl)
 		if err != nil {
 			return nil, err
