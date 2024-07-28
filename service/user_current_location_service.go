@@ -7,6 +7,7 @@ import (
 	"smart-kost-backend/dto"
 	"smart-kost-backend/model"
 	"smart-kost-backend/repository"
+	"time"
 )
 
 type UserCurrentLocationService interface {
@@ -89,6 +90,7 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 			Address:    address.DisplayName,
 			IconColor:  value.IconColor,
 		})
+		time.Sleep(1 * time.Second)
 	}
 	return resp, nil
 }
