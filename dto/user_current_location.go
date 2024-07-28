@@ -26,14 +26,14 @@ type Address struct {
 }
 
 type GetUserCurrentLocationResponse struct {
-	Username   string `json:"username" gorm:"type:string"`
-	IsOnline   string `json:"is_online" gorm:"type:string"`
-	IsSOS      string `json:"is_sos" gorm:"type:string"`
-	StatusName string `json:"status_name" gorm:"type:string"`
-	Lat        int    `json:"lat" gorm:"type:integer"`
-	Long       int    `json:"long" gorm:"type:integer"`
-	Address    string `json:"address" gorm:"type:string"`
-	IconColor  string `json:"icon_color" gorm:"type:string"`
+	Username   string  `json:"username" gorm:"type:string"`
+	IsOnline   string  `json:"is_online" gorm:"type:string"`
+	IsSOS      string  `json:"is_sos" gorm:"type:string"`
+	StatusName string  `json:"status_name" gorm:"type:string"`
+	Lat        float64 `json:"lat" gorm:"type:float"`
+	Long       float64 `json:"long" gorm:"type:float"`
+	Address    string  `json:"address" gorm:"type:string"`
+	IconColor  string  `json:"icon_color" gorm:"type:string"`
 }
 
 type UpdateUserSOS struct {

@@ -81,11 +81,11 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 		if err != nil {
 			return nil, err
 		}
-		longInt, err := strconv.Atoi(value.Long)
+		longInt, err := strconv.ParseFloat(value.Long, 64)
 		if err != nil {
 			return nil, err
 		}
-		latInt, err := strconv.Atoi(value.Lat)
+		latInt, err := strconv.ParseFloat(value.Lat, 64)
 		if err != nil {
 			return nil, err
 		}
