@@ -90,7 +90,7 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 			Address:    address.DisplayName,
 			IconColor:  value.IconColor,
 		})
-		time.Sleep(1 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 	return resp, nil
 }
