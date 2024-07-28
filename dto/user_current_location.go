@@ -30,8 +30,8 @@ type GetUserCurrentLocationResponse struct {
 	IsOnline   string `json:"is_online" gorm:"type:string"`
 	IsSOS      string `json:"is_sos" gorm:"type:string"`
 	StatusName string `json:"status_name" gorm:"type:string"`
-	Lat        string `json:"lat" gorm:"type:string"`
-	Long       string `json:"long" gorm:"type:string"`
+	Lat        int    `json:"lat" gorm:"type:integer"`
+	Long       int    `json:"long" gorm:"type:integer"`
 	Address    string `json:"address" gorm:"type:string"`
 	IconColor  string `json:"icon_color" gorm:"type:string"`
 }

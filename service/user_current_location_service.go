@@ -7,6 +7,7 @@ import (
 	"smart-kost-backend/dto"
 	"smart-kost-backend/model"
 	"smart-kost-backend/repository"
+	"strconv"
 	"time"
 )
 
@@ -80,13 +81,21 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 		if err != nil {
 			return nil, err
 		}
+		longInt, err := strconv.Atoi(value.Long)
+		if err != nil {
+			return nil, err
+		}
+		latInt, err := strconv.Atoi(value.Lat)
+		if err != nil {
+			return nil, err
+		}
 		resp = append(resp, &dto.GetUserCurrentLocationResponse{
 			Username:   value.Username,
 			IsOnline:   value.IsOnline,
 			IsSOS:      value.IsSOS,
 			StatusName: value.StatusName,
-			Long:       value.Long,
-			Lat:        value.Lat,
+			Long:       longInt,
+			Lat:        latInt,
 			Address:    address.DisplayName,
 			IconColor:  value.IconColor,
 		})
