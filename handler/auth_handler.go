@@ -52,7 +52,7 @@ func (h AuthHandler) Login(c *gin.Context) {
 }
 
 func (h AuthHandler) SignUp(c *gin.Context) {
-	var createUser dto.User
+	var createUser dto.LoginBody
 
 	if err := c.ShouldBindJSON(&createUser); err != nil {
 		response.Error(c, 400, errs.InvalidRequestBody.Error())

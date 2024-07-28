@@ -16,7 +16,7 @@ import (
 
 type AuthService interface {
 	Login(input dto.LoginBody) (*dto.LoginResponse, error)
-	SignUp(input dto.User) (*dto.User, error)
+	SignUp(input dto.LoginBody) (*dto.User, error)
 	Logout(input int) (string, error)
 }
 
@@ -75,9 +75,9 @@ func (ts authService) Login(input dto.LoginBody) (*dto.LoginResponse, error) {
 
 }
 
-func (ts authService) SignUp(input dto.User) (*dto.User, error) {
+func (ts authService) SignUp(input dto.LoginBody) (*dto.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Pass), 10)
-	usernameLower := strings.ToLower(input.UserName)
+	usernameLower := strings.ToLower(input.Username)
 
 	if err != nil {
 		return nil, err
