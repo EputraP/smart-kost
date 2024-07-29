@@ -89,8 +89,12 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 		if err != nil {
 			return nil, err
 		}
+		userId , err :=strconv.Atoi(value.UserId,)
+		if err != nil {
+			return nil, err
+		}
 		resp = append(resp, &dto.GetUserCurrentLocationResponse{
-			UserId: value.UserId,
+			UserId: userId ,
 			Username:   value.Username,
 			IsOnline:   value.IsOnline,
 			IsSOS:      value.IsSOS,
