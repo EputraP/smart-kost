@@ -90,6 +90,7 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 			return nil, err
 		}
 		resp = append(resp, &dto.GetUserCurrentLocationResponse{
+			UserId: value.UserId,
 			Username:   value.Username,
 			IsOnline:   value.IsOnline,
 			IsSOS:      value.IsSOS,

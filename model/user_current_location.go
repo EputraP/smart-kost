@@ -17,6 +17,7 @@ type UserCurrentLocation struct {
 }
 
 type GetUserCurrentLocation struct {
+	UserId   string `json:"user_id" gorm:"type:integer"`
 	Username   string `json:"username" gorm:"type:string"`
 	IsOnline   string `json:"is_online" gorm:"type:string"`
 	IsSOS      string `json:"is_sos" gorm:"type:string"`

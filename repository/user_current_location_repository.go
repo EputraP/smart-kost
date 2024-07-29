@@ -43,7 +43,7 @@ func (r *userCurrentLocationRepo) CreateCurrentUserData(inputModel *model.UserCu
 func (r *userCurrentLocationRepo) GetCurrentUserData() ([]*model.GetUserCurrentLocation, error) {
 	var dbResultModel []*model.GetUserCurrentLocation
 
-	sqlScript := "select ul.username, ul.is_online, ucl.is_sos, sl.status_name, ucl.lat, ucl.long, ucl.icon_color from user_current_location ucl left join user_list ul  on ucl.user_id  = ul.user_id  left join status_list sl on ucl.status_id = sl.status_id ORDER BY ul.is_online DESC"
+	sqlScript := "select ul.user_id, ul.username, ul.is_online, ucl.is_sos, sl.status_name, ucl.lat, ucl.long, ucl.icon_color from user_current_location ucl left join user_list ul  on ucl.user_id  = ul.user_id  left join status_list sl on ucl.status_id = sl.status_id ORDER BY ul.is_online DESC"
 
 	res := r.db.Raw(sqlScript).Scan(&dbResultModel)
 	if res.Error != nil {
