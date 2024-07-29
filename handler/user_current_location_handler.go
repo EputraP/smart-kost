@@ -5,6 +5,7 @@ import (
 	"smart-kost-backend/errs"
 	"smart-kost-backend/service"
 	"smart-kost-backend/util/response"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -63,5 +64,20 @@ func (h UserCurrentLocationHandler) GetCurrentUserLocation(c *gin.Context) {
 		return
 	}
 	response.JSON(c, 200, "Get current user data success", resp)
+
+}
+
+func (h UserCurrentLocationHandler) GetSingleCurrentUserLocation(c *gin.Context) {
+	if len(c.Param("userid")) == 0 {
+		response.Error(c, 400, errs.InvalidRequestParam.Error())
+		return
+	}
+	idStr, _ := strconv.Atoi(c.Param("userid"))
+	resp, err := h.userCurrentLocationService.GetUserCurrentLocationByUserId(idStr)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.JSON(c, 200, "Get single current user data success", resp)
 
 }

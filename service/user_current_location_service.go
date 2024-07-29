@@ -15,6 +15,7 @@ type UserCurrentLocationService interface {
 	UpdateSOS(input dto.UpdateUserSOS) (*dto.UpdateUserSOS, error)
 	UpdateUserCurrentLocation(input dto.UpdateUserLocation) (*dto.UserCurrentLocation, error)
 	GetUserCurrentLocation() ([]*dto.GetUserCurrentLocationResponse, error)
+	GetUserCurrentLocationByUserId(userId int) (*dto.GetSingleUserCurrentLocationResponse, error)
 }
 
 type userCurrentLocationService struct {
@@ -109,6 +110,48 @@ func (s userCurrentLocationService) GetUserCurrentLocation() ([]*dto.GetUserCurr
 	return resp, nil
 }
 
+func (s userCurrentLocationService) GetUserCurrentLocationByUserId(userId int) (*dto.GetSingleUserCurrentLocationResponse, error) {
+	var resp *dto.GetSingleUserCurrentLocationResponse
+
+	res, err := s.userCurrentLocationRepo.GetCurrentLocationUserDataByUserId(&model.UserCurrentLocation{UserId: userId})
+	if err != nil {
+		return nil, err
+	}
+	address, err := GetAddressFromLatLong(res.Lat, res.Long)
+	if err != nil {
+		return nil, err
+	}
+	longInt, err := strconv.ParseFloat(res.Long, 64)
+	if err != nil {
+		return nil, err
+	}
+	latInt, err := strconv.ParseFloat(res.Lat, 64)
+	if err != nil {
+		return nil, err
+	}
+	
+
+	resp = &dto.GetSingleUserCurrentLocationResponse{
+		UserId: userId ,
+		Username:   res.Username,
+		IsOnline:   res.IsOnline,
+		IsSOS:      res.IsSOS,
+		StatusName: res.StatusName,
+		Long:       longInt,
+		Lat:        latInt,
+		DisplayName: address.DisplayName,
+		Address:    address.Address,
+		LastLocationData:res.LastLocationData,
+		LastOnline: res.LastOnline,
+		IconColor:  res.IconColor,
+	}
+	time.Sleep(2 * time.Second)
+
+	
+	return resp, nil
+}
+
+
 func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
 
 	var locationData *dto.GetLocation
@@ -134,7 +177,7 @@ func GetAddressFromLatLong(lat string, long string) (*dto.GetLocation, error) {
 		}
 	} else {
 		var address *dto.Address = &dto.Address{
-			Road:        "",
+			Village:        "",
 			Subdistrict: "",
 			City:        "",
 			Province:    "",
